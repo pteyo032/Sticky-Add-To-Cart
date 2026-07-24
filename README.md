@@ -1,73 +1,55 @@
-# Sticky Add-To-Cart
+<p align="right"><a href="README.fr.md">Lire en français</a></p>
 
-Thème Shopify [Horizon](https://help.shopify.com/en/manual/online-store/themes/horizon) enrichi de deux fonctionnalités :
+# Sticky Add-To-Cart — floating buy bar that survives a bundle picker
 
-- **Bundle Selector** — sélecteur de paliers de quantité ("Achetez 1 / 3 / 4...") avec réductions configurables (pourcentage, montant fixe, ou unités offertes) et sélecteurs de variante par unité pour les produits avec options.
-- **Barre d'achat flottante (Sticky Add-to-Cart)** — apparaît au scroll une fois les boutons d'achat sortis de l'écran ; compatible avec le Bundle Selector et reflète en direct le palier sélectionné (label + prix).
+A fix + extension for Shopify **Horizon**'s native sticky add-to-cart bar:
+it shows up once the buy buttons scroll out of view, and unlike the
+out-of-the-box version, it keeps working — and stays in sync — when a
+tier/bundle picker (like [Bundle
+Selector](https://github.com/pteyo032/shopify-bundle-selector)) replaces the
+theme's native buy-buttons form.
 
-## Fonctionnalités
+No third-party app, no new dependency — a small patch to three native
+Horizon JS files.
 
-### Bundle Selector
+| Default (native variant) | Synced to a selected bundle tier |
+|---|---|
+| ![Sticky bar showing the product's image, title and native variant](docs/screenshots/sticky-bar-default.png) | ![Sticky bar showing the selected bundle tier's label and price instead](docs/screenshots/sticky-bar-tier-synced.png) |
 
-- Paliers configurables par le marchand (nombre, quantité, libellé) depuis l'éditeur de thème
-- Trois types de réduction par palier : pourcentage, montant fixe, ou N unités offertes
-- Sélecteurs de variante (taille, couleur…) par unité, uniquement si le produit a plusieurs variantes
-- Badge personnalisable par palier (ex: "Plus populaire", "Meilleure offre")
-- Activation en case à cocher opt-in sur le bloc natif **Boutons d'achat**, comportement natif inchangé si désactivé
+Also shown on desktop, as a floating pill instead of a full-width bar:
 
-> **Limite connue :** le prix affiché par le sélecteur est calculé côté thème pour l'affichage uniquement. Il ne force pas automatiquement la réduction correspondante au paiement — le marchand doit configurer une réduction Shopify correspondante dans l'admin (Réductions), ou déployer une Shopify Function pour une synchronisation garantie.
+![Sticky bar on desktop, floating bottom-left](docs/screenshots/sticky-bar-desktop.png)
 
-### Barre d'achat flottante
+## The problem this fixes
 
-- Réutilise le composant natif du thème Horizon (`enable_sticky_add_to_cart`)
-- Se déclenche via `IntersectionObserver` une fois le bloc d'achat entièrement hors du viewport, se cache en bas de page
-- Reste compatible avec le Bundle Selector (corrige un conflit natif où la barre ne se déclenchait jamais si le Bundle Selector était actif)
-- Se met à jour en direct pour afficher le palier de bundle sélectionné (label + prix) au lieu de la variante native
+Horizon's sticky bar locates the product's buy-buttons form with a fixed
+selector (`product-form-component[data-product-id="..."]`). If your theme
+swaps in a different element for that role — like a bundle/tier picker
+does — the lookup silently fails and the bar never activates. No console
+error, nothing visibly broken, it just never shows up. See
+`docs/gotchas.md` for the full breakdown of why.
 
-## Installation
+## What's in this repo
 
-Comme tout thème Shopify, via [Shopify CLI](https://shopify.dev/docs/themes/tools/cli) :
+Not the full Horizon theme — just the patched files and the docs to apply
+them to yours.
 
-```bash
-shopify theme dev --store <votre-boutique>.myshopify.com
-```
+| Path | What it is |
+|---|---|
+| `assets/sticky-add-to-cart.js` | Patched native file — recognizes an alternate buy-buttons component, syncs display with `BundleTierChangeEvent` |
+| `assets/events.js` | Patched native file — adds `ThemeEvents.bundleTierChange` / `BundleTierChangeEvent` |
+| `assets/bundle-selector.js` | Patched native file — dispatches the new event on tier change (only needed if you use a bundle/tier picker) |
+| `docs/integration-guide.md` | Exact steps to apply this to your own theme, with or without a bundle picker |
+| `docs/gotchas.md` | Technical pitfalls found while building this |
 
-ou en le connectant à une boutique via l'éditeur de thème (Admin → Boutique en ligne → Thèmes → Ajouter un thème → Connecter depuis GitHub).
+## Quick start
 
----
+1. If you just want the native Horizon sticky bar with no picker involved:
+   nothing to install — enable **Sticky add to cart bar** on the product
+   information section in the theme editor.
+2. If a tier/bundle picker breaks it: see `docs/integration-guide.md` for
+   the two changes needed (swap in three JS files, add one CSS class).
 
-# Sticky Add-To-Cart (English)
+## License
 
-A [Shopify Horizon](https://help.shopify.com/en/manual/online-store/themes/horizon) theme enhanced with two features:
-
-- **Bundle Selector** — a "Buy 1 / 3 / 4…" quantity-tier picker with configurable discounts (percentage, fixed amount, or free units) and per-unit variant selectors for products with options.
-- **Sticky Add-to-Cart bar** — appears on scroll once the buy buttons scroll out of view; compatible with the Bundle Selector and live-syncs its display with the selected tier (label + price).
-
-## Features
-
-### Bundle Selector
-
-- Merchant-configurable tiers (count, quantity, label) from the theme editor
-- Three discount types per tier: percentage, fixed amount, or N free units
-- Per-unit variant selectors (size, color…), shown only when the product actually has multiple variants
-- Customizable badge per tier (e.g. "Most popular", "Best deal")
-- Opt-in checkbox on the native **Buy Buttons** block — native behavior is unchanged when disabled
-
-> **Known limitation:** the price shown by the selector is calculated theme-side for display only. It does not automatically enforce the matching discount at checkout — the merchant needs to set up a matching Shopify discount in the admin (Discounts), or deploy a Shopify Function for a guaranteed match.
-
-### Sticky Add-to-Cart bar
-
-- Reuses Horizon's native component (`enable_sticky_add_to_cart`)
-- Triggers via `IntersectionObserver` once the buy-buttons block is fully out of the viewport, hides again near the page footer
-- Stays compatible with the Bundle Selector (fixes a native conflict where the bar never triggered while the Bundle Selector was active)
-- Live-updates to show the selected bundle tier (label + price) instead of the native variant
-
-## Installation
-
-Like any Shopify theme, via the [Shopify CLI](https://shopify.dev/docs/themes/tools/cli):
-
-```bash
-shopify theme dev --store <your-store>.myshopify.com
-```
-
-or by connecting it to a store through the theme editor (Admin → Online Store → Themes → Add theme → Connect from GitHub).
+MIT — see `LICENSE`.
