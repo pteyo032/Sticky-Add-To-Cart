@@ -2,6 +2,8 @@
 
 # Sticky Add-To-Cart — barre d'achat flottante compatible sélecteur de bundle
 
+[![Theme Check](https://github.com/pteyo032/Sticky-Add-To-Cart/actions/workflows/theme-check.yml/badge.svg)](https://github.com/pteyo032/Sticky-Add-To-Cart/actions/workflows/theme-check.yml)
+
 Un correctif + une extension pour la barre d'achat flottante native de
 Shopify **Horizon** : elle apparaît une fois les boutons d'achat sortis de
 l'écran, et contrairement à la version native, elle continue de fonctionner

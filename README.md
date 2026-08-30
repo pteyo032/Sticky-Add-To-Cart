@@ -2,6 +2,8 @@
 
 # Sticky Add-To-Cart — floating buy bar that survives a bundle picker
 
+[![Theme Check](https://github.com/pteyo032/Sticky-Add-To-Cart/actions/workflows/theme-check.yml/badge.svg)](https://github.com/pteyo032/Sticky-Add-To-Cart/actions/workflows/theme-check.yml)
+
 A fix + extension for Shopify **Horizon**'s native sticky add-to-cart bar:
 it shows up once the buy buttons scroll out of view, and unlike the
 out-of-the-box version, it keeps working — and stays in sync — when a
